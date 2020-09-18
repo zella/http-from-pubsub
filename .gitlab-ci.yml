@@ -11,7 +11,6 @@ test:
     SBT_OPTS: "-Dsbt.global.base=sbt-cache/sbtboot -Dsbt.boot.directory=sbt-cache/boot -Dsbt.ivy.home=sbt-cache/ivy"
     COURSIER_CACHE: sbt-cache/coursier
   script:
-    - sbt test
     - sbt assembly
   cache:
     untracked: false
@@ -29,6 +28,8 @@ test:
 publish:
   stage: publish
   image: "docker:19"
+  services:
+    - docker:19-dind
   before_script:
     - echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
   script:
