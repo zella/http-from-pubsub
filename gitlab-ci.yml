@@ -1,0 +1,32 @@
+stages:
+  - test
+  - publish
+
+test:
+  stage: test
+  image: "hseeberger/scala-sbt"
+  variables:
+    SBT_OPTS: "-Dsbt.global.base=sbt-cache/sbtboot -Dsbt.boot.directory=sbt-cache/boot -Dsbt.ivy.home=sbt-cache/ivy"
+    COURSIER_CACHE: sbt-cache/coursier
+  script:
+    - sbt test
+    - sbt assembly
+  artifacts:
+    paths:
+      - build
+    expire_in: 1 days
+
+publish:
+  stage: publish
+  image: "docker:19"
+  services:
+    - docker:19-dind
+  before_script:
+    - echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+  script:
+    - cd build/
+    - export VERSION=$(cat version)
+    - docker build --build-arg VERSION=$VERSION --pull -f Dockerfile -t zella/http-from-pubsub:$VERSION -t zella/http-from-pubsub:latest .
+    - docker push zella/http-from-pubsub
+  only:
+    - master

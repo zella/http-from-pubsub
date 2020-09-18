@@ -1,7 +1,7 @@
 import Dependencies._
 
 ThisBuild / scalaVersion := "2.13.2"
-ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / version := IO.read(file("version"))
 ThisBuild / organization := "org.zella"
 ThisBuild / organizationName := "zella"
 
@@ -27,6 +27,8 @@ assemblyMergeStrategy in assembly := {
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
 }
+
+assemblyOutputPath in assembly := file("build/assembly.jar")
 
 lazy val root = (project in file("."))
   .settings(
