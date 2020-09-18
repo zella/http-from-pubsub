@@ -1,3 +1,5 @@
+variables:
+  PROJECT_NAME: "zella/http-from-pubsub"
 stages:
   - test
   - publish
@@ -32,9 +34,9 @@ publish:
   before_script:
     - echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
   script:
-    - cd build/
     - export VERSION=$(cat version)
-    - docker build --build-arg VERSION=$VERSION --pull -f Dockerfile -t zella/http-from-pubsub:$VERSION -t zella/http-from-pubsub:latest .
-    - docker push zella/http-from-pubsub
+    - cd build/
+    - docker build --build-arg VERSION=$VERSION --pull -f Dockerfile -t $PROJECT_NAME:$VERSION -t $PROJECT_NAME:latest .
+    - docker push $PROJECT_NAME
   only:
     - master
