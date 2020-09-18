@@ -29,14 +29,12 @@ test:
 publish:
   stage: publish
   image: "docker:19"
-  services:
-    - docker:19-dind
   before_script:
     - echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
   script:
     - export VERSION=$(cat version)
     - cd build/
-    - docker build --build-arg VERSION=$VERSION --pull -f Dockerfile -t $PROJECT_NAME:$VERSION -t $PROJECT_NAME:latest .
+    - docker build --pull -f Dockerfile -t $PROJECT_NAME:$VERSION -t $PROJECT_NAME:latest .
     - docker push $PROJECT_NAME
   only:
     - master
