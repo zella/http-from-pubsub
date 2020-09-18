@@ -4,13 +4,21 @@ stages:
 
 test:
   stage: test
-  image: "hseeberger/scala-sbt"
+  image: "hseeberger/scala-sbt:11.0.8_1.3.13_2.13.3"
   variables:
     SBT_OPTS: "-Dsbt.global.base=sbt-cache/sbtboot -Dsbt.boot.directory=sbt-cache/boot -Dsbt.ivy.home=sbt-cache/ivy"
     COURSIER_CACHE: sbt-cache/coursier
   script:
     - sbt test
     - sbt assembly
+  cache:
+    untracked: false
+    paths:
+      - "sbt-cache/ivy/cache"
+      - "sbt-cache/boot"
+      - "sbt-cache/sbtboot"
+      - "sbt-cache/target"
+      - "sbt-cache/coursier"
   artifacts:
     paths:
       - build
